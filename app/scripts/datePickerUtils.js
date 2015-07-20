@@ -84,7 +84,7 @@ angular.module('datePicker').factory('datePickerUtils', function(){
       var year = date.getFullYear();
       var months = [];
       var pushedDate;
-      for (var month = 0; month < 12; month++) {
+      for (var month = 1; month <= 12; month++) {
         pushedDate = createNewDate(year, month, 1);
         months.push(pushedDate);
       }

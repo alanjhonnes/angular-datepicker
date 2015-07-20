@@ -1,7 +1,5 @@
 'use strict';
 (function(angular){
-'use strict';
-
 var Module = angular.module('datePicker', []);
 
 Module.constant('datePickerConfig', {
@@ -267,8 +265,6 @@ Module.directive('datePicker', ['datePickerConfig', 'datePickerUtils', function 
   };
 }]);
 
-'use strict';
-
 angular.module('datePicker').factory('datePickerUtils', function(){
   var createNewDate = function(year, month, day, hour, minute) {
     // without any arguments, the default date will be 1899-12-31T00:00:00.000Z
@@ -353,7 +349,7 @@ angular.module('datePicker').factory('datePickerUtils', function(){
       var year = date.getFullYear();
       var months = [];
       var pushedDate;
-      for (var month = 0; month < 12; month++) {
+      for (var month = 1; month <= 12; month++) {
         pushedDate = createNewDate(year, month, 1);
         months.push(pushedDate);
       }
@@ -413,7 +409,6 @@ angular.module('datePicker').factory('datePickerUtils', function(){
     }
   };
 });
-'use strict';
 
 var Module = angular.module('datePicker');
 
@@ -448,8 +443,6 @@ Module.directive('dateRange', function () {
     }
   };
 });
-
-'use strict';
 
 var PRISTINE_CLASS = 'ng-pristine',
     DIRTY_CLASS = 'ng-dirty';
@@ -622,9 +615,8 @@ Module.directive('dateTime', ['$compile', '$document', '$filter', 'dateTimeConfi
   };
 }]);
 
-angular.module("datePicker").run(["$templateCache", function($templateCache) {
-
-  $templateCache.put("templates/datepicker.html",
+angular.module('datePicker').run(['$templateCache', function($templateCache) {
+$templateCache.put('app/templates/datepicker.html',
     "<div ng-switch=\"view\">\r" +
     "\n" +
     "  <div ng-switch-when=\"date\">\r" +
@@ -841,7 +833,8 @@ angular.module("datePicker").run(["$templateCache", function($templateCache) {
     "\n"
   );
 
-  $templateCache.put("templates/daterange.html",
+
+  $templateCache.put('app/templates/daterange.html',
     "<div>\r" +
     "\n" +
     "    <table>\r" +
