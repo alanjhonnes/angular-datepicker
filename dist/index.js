@@ -835,27 +835,19 @@ $templateCache.put('app/templates/datepicker.html',
 
 
   $templateCache.put('app/templates/daterange.html',
-    "<div>\r" +
+    "<div class=\"row\">\r" +
     "\n" +
-    "    <table>\r" +
+    "    <div class=\"col-md-6\">\r" +
     "\n" +
-    "        <tr>\r" +
+    "        <div date-picker=\"start\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\" min-view=\"date\" max-view=\"date\"></div>\r" +
     "\n" +
-    "            <td valign=\"top\">\r" +
+    "    </div>\r" +
     "\n" +
-    "                <div date-picker=\"start\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\" min-view=\"date\" max-view=\"date\"></div>\r" +
+    "    <div class=\"col-md-6\">\r" +
     "\n" +
-    "            </td>\r" +
+    "        <div date-picker=\"end\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\"  min-view=\"date\" max-view=\"date\"></div>\r" +
     "\n" +
-    "            <td valign=\"top\">\r" +
-    "\n" +
-    "                <div date-picker=\"end\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\"  min-view=\"date\" max-view=\"date\"></div>\r" +
-    "\n" +
-    "            </td>\r" +
-    "\n" +
-    "        </tr>\r" +
-    "\n" +
-    "    </table>\r" +
+    "    </div>\r" +
     "\n" +
     "</div>\r" +
     "\n"
