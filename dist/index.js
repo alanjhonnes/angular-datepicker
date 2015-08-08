@@ -418,8 +418,8 @@ Module.directive('dateRange', function () {
     scope: {
       start: '=',
       end: '=',
-      minView: '=',
-      maxView: '='
+      minView: '@?',
+      maxView: '@?'
     },
     link: function (scope, element, attrs) {
 
@@ -428,7 +428,7 @@ Module.directive('dateRange', function () {
        */
       scope.start = new Date(scope.start || new Date());
       scope.end = new Date(scope.end || new Date());
-      scope.minView = scope.minView || 'date';
+      scope.minView = scope.minView || 'year';
       scope.maxView = scope.minView || 'date';
       attrs.$observe('disabled', function(isDisabled){
           scope.disableDatePickers = !!isDisabled;
