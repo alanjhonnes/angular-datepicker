@@ -8,8 +8,8 @@ Module.directive('dateRange', function () {
     scope: {
       start: '=',
       end: '=',
-      minView: '@',
-      maxView: '@'
+      minView: '=',
+      maxView: '='
     },
     link: function (scope, element, attrs) {
 
