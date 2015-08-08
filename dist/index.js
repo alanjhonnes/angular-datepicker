@@ -3,7 +3,7 @@
 var Module = angular.module('datePicker', []);
 
 Module.constant('datePickerConfig', {
-  template: 'templates/datepicker.html',
+  template: 'app/templates/datepicker.html',
   view: 'month',
   views: ['year', 'month', 'date', 'hours', 'minutes'],
   step: 5
@@ -414,10 +414,12 @@ var Module = angular.module('datePicker');
 
 Module.directive('dateRange', function () {
   return {
-    templateUrl: 'templates/daterange.html',
+    templateUrl: 'app/templates/daterange.html',
     scope: {
       start: '=',
-      end: '='
+      end: '=',
+      minView: '@',
+      maxView: '@'
     },
     link: function (scope, element, attrs) {
 
@@ -426,7 +428,8 @@ Module.directive('dateRange', function () {
        */
       scope.start = new Date(scope.start || new Date());
       scope.end = new Date(scope.end || new Date());
-
+      scope.minView = scope.minView || 'date';
+      scope.maxView = scope.minView || 'date';
       attrs.$observe('disabled', function(isDisabled){
           scope.disableDatePickers = !!isDisabled;
         });
@@ -839,13 +842,13 @@ $templateCache.put('app/templates/datepicker.html',
     "\n" +
     "    <div class=\"col-md-6\">\r" +
     "\n" +
-    "        <div date-picker=\"start\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\" min-view=\"date\" max-view=\"date\"></div>\r" +
+    "        <div date-picker=\"start\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\" min-view=\"minView\" max-view=\"maxView\"></div>\r" +
     "\n" +
     "    </div>\r" +
     "\n" +
     "    <div class=\"col-md-6\">\r" +
     "\n" +
-    "        <div date-picker=\"end\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\"  min-view=\"date\" max-view=\"date\"></div>\r" +
+    "        <div date-picker=\"end\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\"  min-view=\"minView\" max-view=\"maxView\"></div>\r" +
     "\n" +
     "    </div>\r" +
     "\n" +

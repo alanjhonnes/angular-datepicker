@@ -159,7 +159,7 @@ module.exports = function (grunt) {
     ngtemplates: {
       dist: {
         options: {
-          base: '<%= yeoman.app %>',
+          base: 'app',
           module: 'datePicker'
         },
         src: '<%= yeoman.app %>/templates/*.html',
