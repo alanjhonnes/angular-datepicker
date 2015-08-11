@@ -83,13 +83,10 @@ Module.directive('datePicker', ['datePickerConfig', 'datePickerUtils', function 
       //end min, max date validator
 
       /** @namespace attrs.minView, attrs.maxView */
-      console.log(scope.maxView);
-      console.log(scope.minView);
       scope.views = scope.views.slice(
         scope.views.indexOf(scope.maxView || 'year'),
         scope.views.indexOf(scope.minView || 'minutes')+1
       );
-      console.log(scope.views);
 
       if (scope.views.length === 1 || scope.views.indexOf(scope.view)===-1) {
         scope.view = scope.views[0];
@@ -439,7 +436,6 @@ Module.directive('dateRange', function () {
       scope.end = new Date(scope.end || new Date());
       scope.minView = scope.minView || 'date';
       scope.maxView = scope.maxView || 'date';
-      console.log(scope.minView);
       attrs.$observe('disabled', function(isDisabled){
           scope.disableDatePickers = !!isDisabled;
         });
@@ -848,19 +844,27 @@ $templateCache.put('app/templates/datepicker.html',
 
 
   $templateCache.put('app/templates/daterange.html',
-    "<div class=\"row\">\r" +
+    "<div>\r" +
     "\n" +
-    "    <div class=\"col-md-6\">\r" +
+    "    <table>\r" +
     "\n" +
-    "        <div date-picker=\"start\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\" min-view=\"{{minView}}\" max-view=\"{{maxView}}\"></div>\r" +
+    "        <tr>\r" +
     "\n" +
-    "    </div>\r" +
+    "            <td valign=\"top\">\r" +
     "\n" +
-    "    <div class=\"col-md-6\">\r" +
+    "                <div date-picker=\"start\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\" min-view=\"{{minView}}\" max-view=\"{{maxView}}\"></div>\r" +
     "\n" +
-    "        <div date-picker=\"end\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\"  min-view=\"{{minView}}\" max-view=\"{{maxView}}\"></div>\r" +
+    "            </td>\r" +
     "\n" +
-    "    </div>\r" +
+    "            <td valign=\"top\">\r" +
+    "\n" +
+    "                <div date-picker=\"end\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\"  min-view=\"{{minView}}\" max-view=\"{{maxView}}\"></div>\r" +
+    "\n" +
+    "            </td>\r" +
+    "\n" +
+    "        </tr>\r" +
+    "\n" +
+    "    </table>\r" +
     "\n" +
     "</div>\r" +
     "\n"

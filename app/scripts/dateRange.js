@@ -21,7 +21,6 @@ Module.directive('dateRange', function () {
       scope.end = new Date(scope.end || new Date());
       scope.minView = scope.minView || 'date';
       scope.maxView = scope.maxView || 'date';
-      console.log(scope.minView);
       attrs.$observe('disabled', function(isDisabled){
           scope.disableDatePickers = !!isDisabled;
         });
