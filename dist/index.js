@@ -8,7 +8,7 @@ Module.constant('datePickerConfig', {
   views: ['year', 'month', 'date', 'hours', 'minutes'],
   step: 5
 });
-
+//
 Module.filter('time',function () {
   function format(date){
     return ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
