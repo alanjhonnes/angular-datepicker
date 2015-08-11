@@ -84,7 +84,6 @@ Module.directive('datePicker', ['datePickerConfig', 'datePickerUtils', function 
       }
       //end min, max date validator
 
-      /** @namespace attrs.minView, attrs.maxView */
       scope.views = scope.views.slice(
         scope.views.indexOf(scope.maxView || 'year'),
         scope.views.indexOf(scope.minView || 'minutes')+1
