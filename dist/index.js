@@ -528,6 +528,7 @@ Module.directive('dateTime', ['$compile', '$document', '$filter', 'dateTimeConfi
 
 
       //min. max date validators
+      console.log(scope.minDate);
       if (angular.isDefined(scope.minDate)) {
         var minVal;
         ngModel.$validators.min = function (value) {

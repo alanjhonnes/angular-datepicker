@@ -157,6 +157,30 @@
 
     <date-range start="a" end="b" style="position: relative; z-index:0"></date-range>
     -->
+    <div ng-controller="TestCtrl">
+
+      <form name="form">
+        <div class="input-group date" date-time-append>
+          <input name="endTime" id="inputEndTime" type="datetime" class="form-control" date-time ng-model="vm.quotation.endTime" required
+                 view="date" min-view="minutes" auto-close="true" format="dd/MM/yy 'às' HH'h'mm'min'" date after="now"
+                 before="vm.quotation.endTime" min-date="now"
+                 readonly>
+          <!-- min-date="{{vm.now|date:'yyyy-MM-ddTHH:mm:ssZ'}}" -->
+          <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+        </div>
+
+          <div class="error-message" ng-show="form.endTime.$error.required">
+            Selecionar a data final para envio de propostas.
+          </div>
+          <div class="error-message" ng-show="form.endTime.$error.min">
+            Selecionar data futura.
+          </div>
+
+        <pre>{{form.endTime.$error|json}}</pre>
+        <pre>{{now}}</pre>
+      </form>
+  </div>
+
     <h5>Date range button</h5>
 
     <div class="dropdown">
@@ -180,7 +204,10 @@
 <script src="dist/index.js"></script>
 
 <script>
-  angular.module('sample', ['datePicker', 'ui.bootstrap']);
+  angular.module('sample', ['datePicker', 'ui.bootstrap'])
+          .controller('TestCtrl', ['$scope', function($scope){
+            $scope.now = new Date();
+          }]);
 </script>
 </body>
 </html>
