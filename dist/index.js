@@ -27,7 +27,7 @@ Module.filter('time',function () {
 
 Module.directive('datePicker', ['datePickerConfig', 'datePickerUtils', function datePickerDirective(datePickerConfig, datePickerUtils) {
 
-  ///noinspection JSUnusedLocalSymbols
+  //noinspection JSUnusedLocalSymbols
   return {
     // this is a bug ?
     require:'?ngModel',
