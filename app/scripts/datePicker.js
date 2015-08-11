@@ -32,16 +32,21 @@ Module.directive('datePicker', ['datePickerConfig', 'datePickerUtils', function 
     // this is a bug ?
     require:'?ngModel',
     template: '<div ng-include="template"></div>',
+    restrict: 'AE',
     scope: {
       model: '=datePicker',
       after: '=?',
-      before: '=?'
+      before: '=?',
+      minView: '@?',
+      maxView: '@?'
     },
     link: function (scope, element, attrs, ngModel) {
 
       var arrowClick = false;
 
       scope.date = new Date(scope.model || new Date());
+      scope.minView = scope.minView || 'year';
+      scope.maxView = scope.maxView || 'date';
       scope.views = datePickerConfig.views.concat();
       scope.view = attrs.view || datePickerConfig.view;
       scope.now = new Date();
@@ -78,10 +83,13 @@ Module.directive('datePicker', ['datePickerConfig', 'datePickerUtils', function 
       //end min, max date validator
 
       /** @namespace attrs.minView, attrs.maxView */
-      scope.views =scope.views.slice(
-        scope.views.indexOf(attrs.maxView || 'year'),
-        scope.views.indexOf(attrs.minView || 'minutes')+1
+      console.log(scope.maxView);
+      console.log(scope.minView);
+      scope.views = scope.views.slice(
+        scope.views.indexOf(scope.maxView || 'year'),
+        scope.views.indexOf(scope.minView || 'minutes')+1
       );
+      console.log(scope.views);
 
       if (scope.views.length === 1 || scope.views.indexOf(scope.view)===-1) {
         scope.view = scope.views[0];

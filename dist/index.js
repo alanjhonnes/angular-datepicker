@@ -32,16 +32,21 @@ Module.directive('datePicker', ['datePickerConfig', 'datePickerUtils', function 
     // this is a bug ?
     require:'?ngModel',
     template: '<div ng-include="template"></div>',
+    restrict: 'AE',
     scope: {
       model: '=datePicker',
       after: '=?',
-      before: '=?'
+      before: '=?',
+      minView: '@?',
+      maxView: '@?'
     },
     link: function (scope, element, attrs, ngModel) {
 
       var arrowClick = false;
 
       scope.date = new Date(scope.model || new Date());
+      scope.minView = scope.minView || 'year';
+      scope.maxView = scope.maxView || 'date';
       scope.views = datePickerConfig.views.concat();
       scope.view = attrs.view || datePickerConfig.view;
       scope.now = new Date();
@@ -78,10 +83,13 @@ Module.directive('datePicker', ['datePickerConfig', 'datePickerUtils', function 
       //end min, max date validator
 
       /** @namespace attrs.minView, attrs.maxView */
-      scope.views =scope.views.slice(
-        scope.views.indexOf(attrs.maxView || 'year'),
-        scope.views.indexOf(attrs.minView || 'minutes')+1
+      console.log(scope.maxView);
+      console.log(scope.minView);
+      scope.views = scope.views.slice(
+        scope.views.indexOf(scope.maxView || 'year'),
+        scope.views.indexOf(scope.minView || 'minutes')+1
       );
+      console.log(scope.views);
 
       if (scope.views.length === 1 || scope.views.indexOf(scope.view)===-1) {
         scope.view = scope.views[0];
@@ -415,6 +423,7 @@ var Module = angular.module('datePicker');
 Module.directive('dateRange', function () {
   return {
     templateUrl: 'app/templates/daterange.html',
+    restrict: 'E',
     scope: {
       start: '=',
       end: '=',
@@ -428,8 +437,9 @@ Module.directive('dateRange', function () {
        */
       scope.start = new Date(scope.start || new Date());
       scope.end = new Date(scope.end || new Date());
-      scope.minView = scope.minView || 'year';
-      scope.maxView = scope.minView || 'date';
+      scope.minView = scope.minView || 'date';
+      scope.maxView = scope.maxView || 'date';
+      console.log(scope.minView);
       attrs.$observe('disabled', function(isDisabled){
           scope.disableDatePickers = !!isDisabled;
         });
@@ -842,13 +852,13 @@ $templateCache.put('app/templates/datepicker.html',
     "\n" +
     "    <div class=\"col-md-6\">\r" +
     "\n" +
-    "        <div date-picker=\"start\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\" min-view=\"minView\" max-view=\"maxView\"></div>\r" +
+    "        <div date-picker=\"start\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\" min-view=\"{{minView}}\" max-view=\"{{maxView}}\"></div>\r" +
     "\n" +
     "    </div>\r" +
     "\n" +
     "    <div class=\"col-md-6\">\r" +
     "\n" +
-    "        <div date-picker=\"end\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\"  min-view=\"minView\" max-view=\"maxView\"></div>\r" +
+    "        <div date-picker=\"end\" ng-disabled=\"disableDatePickers\"  class=\"date-picker\" date after=\"start\" before=\"end\"  min-view=\"{{minView}}\" max-view=\"{{maxView}}\"></div>\r" +
     "\n" +
     "    </div>\r" +
     "\n" +

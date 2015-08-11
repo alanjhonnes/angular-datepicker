@@ -5,6 +5,7 @@ var Module = angular.module('datePicker');
 Module.directive('dateRange', function () {
   return {
     templateUrl: 'app/templates/daterange.html',
+    restrict: 'E',
     scope: {
       start: '=',
       end: '=',
@@ -18,8 +19,9 @@ Module.directive('dateRange', function () {
        */
       scope.start = new Date(scope.start || new Date());
       scope.end = new Date(scope.end || new Date());
-      scope.minView = scope.minView || 'year';
-      scope.maxView = scope.minView || 'date';
+      scope.minView = scope.minView || 'date';
+      scope.maxView = scope.maxView || 'date';
+      console.log(scope.minView);
       attrs.$observe('disabled', function(isDisabled){
           scope.disableDatePickers = !!isDisabled;
         });
