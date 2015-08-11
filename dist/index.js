@@ -528,24 +528,24 @@ Module.directive('dateTime', ['$compile', '$document', '$filter', 'dateTimeConfi
 
 
       //min. max date validators
-      if (angular.isDefined(attrs.minDate)) {
+      if (angular.isDefined(scope.minDate)) {
         var minVal;
         ngModel.$validators.min = function (value) {
             return !datePickerUtils.isValidDate(value) || angular.isUndefined(minVal) || value >= minVal;
           };
-        attrs.$observe('minDate', function (val) {
-            minVal = new Date(val);
+        scope.$watch('minDate', function (val) {
+            minVal = val;
             ngModel.$validate();
           });
       }
 
-      if (angular.isDefined(attrs.maxDate)) {
+      if (angular.isDefined(scope.maxDate)) {
         var maxVal;
         ngModel.$validators.max = function (value) {
             return !datePickerUtils.isValidDate(value) || angular.isUndefined(maxVal) || value <= maxVal;
           };
-        attrs.$observe('maxDate', function (val) {
-            maxVal = new Date(val);
+        scope.$watch('maxDate', function (val) {
+            maxVal = val;
             ngModel.$validate();
           });
       }
