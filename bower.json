@@ -1,7 +1,7 @@
 {
   "name": "alan-angular-datepicker",
   "license": "MIT",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "main": [
     "./dist/index.js",
     "./dist/index.css"
