@@ -157,27 +157,33 @@
 
     <date-range start="a" end="b" style="position: relative; z-index:0"></date-range>
     -->
-    <div ng-controller="TestCtrl">
+    <div ng-controller="TestCtrl as vm">
 
-      <form name="form">
+      <form id="inputform" name="vm.form" novalidate>
         <div class="input-group date" date-time-append>
-          <input name="endTime" id="inputEndTime" type="datetime" class="form-control" date-time ng-model="vm.quotation.endTime" required
-                 view="date" min-view="minutes" auto-close="true" format="dd/MM/yy 'às' HH'h'mm'min'" date after="now"
-                 before="vm.quotation.endTime" min-date="now"
+          <input name="endTime" id="inputEndTime" type="text" class="form-control" min="2020-11-11T11:11:11"
+                 date-time ng-model="vm.endTime" required min-date="{{vm.now|date:'yyyy-MM-ddTHH:mm:ssZ'}}"
+                 view="date" min-view="minutes" auto-close="true" format="dd/MM/yy 'às' HH'h'mm'min'" date after="vm.now"
+                 before="vm.endTime"
                  readonly>
           <!-- min-date="{{vm.now|date:'yyyy-MM-ddTHH:mm:ssZ'}}" -->
           <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
         </div>
 
-          <div class="error-message" ng-show="form.endTime.$error.required">
+          <div class="error-message" ng-show="vm.form.endTime.$error.required">
             Selecionar a data final para envio de propostas.
           </div>
-          <div class="error-message" ng-show="form.endTime.$error.min">
+          <div class="error-message" ng-show="vm.form.endTime.$error.min">
             Selecionar data futura.
           </div>
+        <div class="error-message" ng-show="vm.form.endTime.$error.max">
+          Selecionar menor data maxima.
+        </div>
 
-        <pre>{{form.endTime.$error|json}}</pre>
-        <pre>{{now}}</pre>
+        <pre>{{vm.form.endTime.$error|json}}</pre>
+        <pre>{{vm.form | json}}</pre>
+        <pre>{{vm.now}}</pre>
+        <pre>{{vm.endTime}}</pre>
       </form>
   </div>
 
@@ -195,8 +201,8 @@
   </div>
 </div>
 
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.6.0/ui-bootstrap-tpls.min.js"></script>
+<script src="app/components/angular/angular.js"></script>
+<script src="app/components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 <!--<script src="app/scripts/datePicker.js"></script>-->
 <!--<script src="app/scripts/datePickerUtils.js"></script>-->
 <!--<script src="app/scripts/dateRange.js"></script>-->
@@ -206,7 +212,8 @@
 <script>
   angular.module('sample', ['datePicker', 'ui.bootstrap'])
           .controller('TestCtrl', ['$scope', function($scope){
-            $scope.now = new Date();
+            var vm = this;
+            vm.now = new Date();
           }]);
 </script>
 </body>

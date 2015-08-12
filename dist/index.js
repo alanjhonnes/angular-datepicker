@@ -526,27 +526,25 @@ Module.directive('dateTime', ['$compile', '$document', '$filter', 'dateTimeConfi
       ngModel.$formatters.push(formatter);
       ngModel.$parsers.unshift(parser);
 
+      if (angular.isDefined(attrs.minDate)) {
+        var minVal = new Date(attrs.minDate);
 
-      //min. max date validators
-      console.log(scope.minDate);
-      if (angular.isDefined(scope.minDate)) {
-        var minVal;
         ngModel.$validators.min = function (value) {
             return !datePickerUtils.isValidDate(value) || angular.isUndefined(minVal) || value >= minVal;
           };
-        scope.$watch('minDate', function (val) {
-            minVal = val;
+        attrs.$observe('minDate', function (val) {
+            minVal = new Date(val);
             ngModel.$validate();
           });
       }
 
-      if (angular.isDefined(scope.maxDate)) {
-        var maxVal;
+      if (angular.isDefined(attrs.maxDate)) {
+        var maxVal = new Date(attrs.maxDate);
         ngModel.$validators.max = function (value) {
             return !datePickerUtils.isValidDate(value) || angular.isUndefined(maxVal) || value <= maxVal;
           };
-        scope.$watch('maxDate', function (val) {
-            maxVal = val;
+        attrs.$observe('maxDate', function (val) {
+            minVal = new Date(val);
             ngModel.$validate();
           });
       }
@@ -686,7 +684,7 @@ $templateCache.put('app/templates/datepicker.html',
     "\n" +
     "        <th ng-click=\"prev(10)\">&lsaquo;</th>\r" +
     "\n" +
-    "        <th colspan=\"5\" class=\"switch\"ng-bind=\"years[0].getFullYear()+' - '+years[years.length-1].getFullYear()\"></th>\r" +
+    "        <th colspan=\"5\" class=\"switch\" ng-bind=\"years[0].getFullYear()+' - '+years[years.length-1].getFullYear()\"></th>\r" +
     "\n" +
     "        <th ng-click=\"next(10)\">&rsaquo;</i></th>\r" +
     "\n" +
@@ -700,7 +698,7 @@ $templateCache.put('app/templates/datepicker.html',
     "\n" +
     "        <td colspan=\"7\">\r" +
     "\n" +
-    "          <span ng-class=\"{'active':isSameYear(year),'now':isNow(year)}\"\r" +
+    "          <span ng-class=\"{'active':isSameYear(year),'now':isNow(year), 'after':isAfter(year),'before':isBefore(year)}\"\r" +
     "\n" +
     "                ng-repeat=\"year in years\"\r" +
     "\n" +
@@ -784,7 +782,7 @@ $templateCache.put('app/templates/datepicker.html',
     "\n" +
     "          <span ng-repeat=\"hour in hours\"\r" +
     "\n" +
-    "                ng-class=\"{'now':isNow(hour),'active':isSameHour(hour)}\"\r" +
+    "                ng-class=\"{'now':isNow(hour),'active':isSameHour(hour), 'after':isAfter(hour),'before':isBefore(hour)}\"\r" +
     "\n" +
     "                ng-click=\"setDate(hour)\" ng-bind=\"hour|time\"></span>\r" +
     "\n" +
@@ -824,7 +822,7 @@ $templateCache.put('app/templates/datepicker.html',
     "\n" +
     "          <span ng-repeat=\"minute in minutes\"\r" +
     "\n" +
-    "                ng-class=\"{active:isSameMinutes(minute),'now':isNow(minute)}\"\r" +
+    "                ng-class=\"{active:isSameMinutes(minute),'now':isNow(minute), 'after':isAfter(minute),'before':isBefore(minute)}\"\r" +
     "\n" +
     "                ng-click=\"setDate(minute)\"\r" +
     "\n" +
