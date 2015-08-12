@@ -42,7 +42,6 @@ Module.directive('dateTime', ['$compile', '$document', '$filter', 'dateTimeConfi
 
   return {
     require: 'ngModel',
-    scope:true,
     link: function (scope, element, attrs, ngModel) {
       var format = attrs.format || dateTimeConfig.format;
       var parentForm = element.inheritedData('$formController');
@@ -90,7 +89,7 @@ Module.directive('dateTime', ['$compile', '$document', '$filter', 'dateTimeConfi
             return !datePickerUtils.isValidDate(value) || angular.isUndefined(maxVal) || value <= maxVal;
           };
         attrs.$observe('maxDate', function (val) {
-            minVal = new Date(val);
+            maxVal = new Date(val);
             ngModel.$validate();
           });
       }
