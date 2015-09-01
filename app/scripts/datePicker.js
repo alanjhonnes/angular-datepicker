@@ -25,7 +25,8 @@ Module.filter('time',function () {
   };
 });
 
-Module.directive('datePicker', ['datePickerConfig', 'datePickerUtils', function datePickerDirective(datePickerConfig, datePickerUtils) {
+Module.directive('datePicker', ['datePickerConfig', 'datePickerUtils',
+  function datePickerDirective(datePickerConfig, datePickerUtils) {
 
   //noinspection JSUnusedLocalSymbols
   return {
@@ -103,12 +104,14 @@ Module.directive('datePicker', ['datePickerConfig', 'datePickerUtils', function 
         if(attrs.disabled) {
           return;
         }
+        //scope.date = datePickerUtils.convertDateToUTC(date);
         scope.date = date;
         // change next view
         var nextView = scope.views[scope.views.indexOf(scope.view) + 1];
         if ((!nextView || partial) || scope.model) {
 
-          scope.model = new Date(scope.model || date);
+          scope.model = scope.date;
+          //scope.model = new Date(scope.model || date);
           //if ngModel , setViewValue and trigger ng-change, etc...
           if(ngModel) {
             ngModel.$setViewValue(scope.date);
@@ -118,19 +121,19 @@ Module.directive('datePicker', ['datePickerConfig', 'datePickerUtils', function 
           //noinspection FallThroughInSwitchStatementJS
           switch (view) {
           case 'minutes':
-            scope.model.setMinutes(date.getMinutes());
+            scope.model.setMinutes(scope.date.getMinutes());
           /*falls through*/
           case 'hours':
-            scope.model.setHours(date.getHours());
+            scope.model.setHours(scope.date.getHours());
           /*falls through*/
           case 'date':
-            scope.model.setDate(date.getDate());
+            scope.model.setDate(scope.date.getDate());
           /*falls through*/
           case 'month':
-            scope.model.setMonth(date.getMonth());
+            scope.model.setMonth(scope.date.getMonth());
           /*falls through*/
           case 'year':
-            scope.model.setFullYear(date.getFullYear());
+            scope.model.setFullYear(scope.date.getFullYear());
           }
           scope.$emit('setDate', scope.model, scope.view);
         }

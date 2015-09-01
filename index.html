@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="dist/index.css"/>
 </head>
 <body ng-app="sample">
-<div class="row-fluid">
+<div class="row-fluid" ng-controller="TestCtrl as vm">
   <!--
   <div class="span6">
     <h2>Calendar</h2>
@@ -157,7 +157,7 @@
 
     <date-range start="a" end="b" style="position: relative; z-index:0"></date-range>
     -->
-    <div ng-controller="TestCtrl as vm">
+    <div>
 
       <form id="inputform" name="vm.form" novalidate>
         <div class="input-group date" date-time-append>
@@ -199,15 +199,19 @@
       </div>
     </div>
   </div>
+  <div class="span6">
+    <pre>{{vm.now}}</pre>
+    <pre>{{vm.endTime}}</pre>
+  </div>
 </div>
 
 <script src="app/components/angular/angular.js"></script>
 <script src="app/components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-<!--<script src="app/scripts/datePicker.js"></script>-->
-<!--<script src="app/scripts/datePickerUtils.js"></script>-->
-<!--<script src="app/scripts/dateRange.js"></script>-->
-<!--<script src="app/scripts/input.js"></script>-->
-<script src="dist/index.js"></script>
+<script src="app/scripts/datePicker.js"></script>
+<script src="app/scripts/datePickerUtils.js"></script>
+<script src="app/scripts/dateRange.js"></script>
+<script src="app/scripts/input.js"></script>
+<!--<script src="dist/index.js"></script>-->
 
 <script>
   angular.module('sample', ['datePicker', 'ui.bootstrap'])

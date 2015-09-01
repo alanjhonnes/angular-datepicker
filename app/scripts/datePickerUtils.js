@@ -1,26 +1,52 @@
 'use strict';
 
-angular.module('datePicker').factory('datePickerUtils', function(){
-  var createNewDate = function(year, month, day, hour, minute) {
+angular.module('datePicker').factory('datePickerUtils', function () {
+
+  var createNewDate = function (year, month, day, hour, minute) {
     // without any arguments, the default date will be 1899-12-31T00:00:00.000Z
     return new Date(Date.UTC(year | 0, month | 0, day | 0, hour | 0, minute | 0));
+    //return new Date(year | 0, month | 0, day | 0, hour | 0, minute | 0);
   };
   return {
-    getVisibleMinutes : function(date, step) {
+    createDateAsUTC: function (date) {
+      return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(),
+        date.getMinutes(), date.getSeconds()));
+    },
+    convertDateToUTC: function (date) {
+      return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(),
+        date.getUTCMinutes(), date.getUTCSeconds());
+    },
+    getVisibleMinutes: function (date, step) {
       date = new Date(date || new Date());
+      //date = this.createDateAsUTC(date);
       var year = date.getFullYear();
       var month = date.getMonth();
       var day = date.getDate();
-      var hour = date.getUTCHours();
+      //var hour = date.getUTCHours();
+      var hour = date.getHours();
       var minutes = [];
       var minute, pushedDate;
-      for (minute = 0 ; minute < 60 ; minute += step) {
-        pushedDate = createNewDate(year, month, day, hour, minute);
+      for (minute = 0; minute < 60; minute += step) {
+        pushedDate = new Date(year, month, day, hour, minute);
         minutes.push(pushedDate);
       }
       return minutes;
     },
-    getVisibleWeeks : function(date) {
+    getVisibleHours: function (date) {
+      date = new Date(date || new Date());
+      var year = date.getFullYear();
+      var month = date.getMonth();
+      var day = date.getDate();
+      var hours = [];
+      var hour, pushedDate;
+      for (hour = 0; hour < 24; hour++) {
+        pushedDate = new Date(year, month, day, hour);
+        //pushedDate = new Date(year, month, day, hour);
+        hours.push(pushedDate);
+      }
+      return hours;
+    },
+    getVisibleWeeks: function (date) {
       date = new Date(date || new Date());
       var startMonth = date.getMonth();
       var startYear = date.getYear();
@@ -51,7 +77,7 @@ angular.module('datePicker').factory('datePickerUtils', function(){
       }
       return weeks;
     },
-    getVisibleYears : function(date) {
+    getVisibleYears: function (date) {
       date = new Date(date || new Date());
       date.setFullYear(date.getFullYear() - (date.getFullYear() % 10));
       var year = date.getFullYear();
@@ -64,7 +90,7 @@ angular.module('datePicker').factory('datePickerUtils', function(){
       }
       return years;
     },
-    getDaysOfWeek : function(date) {
+    getDaysOfWeek: function (date) {
       date = new Date(date || new Date());
       date.setDate(date.getDate() - (date.getDay() - 1));
       var year = date.getFullYear();
@@ -79,7 +105,7 @@ angular.module('datePicker').factory('datePickerUtils', function(){
       }
       return days;
     },
-    getVisibleMonths : function(date) {
+    getVisibleMonths: function (date) {
       date = new Date(date || new Date());
       var year = date.getFullYear();
       var months = [];
@@ -90,55 +116,43 @@ angular.module('datePicker').factory('datePickerUtils', function(){
       }
       return months;
     },
-    getVisibleHours : function(date) {
-      date = new Date(date || new Date());
-      var year = date.getFullYear();
-      var month = date.getMonth();
-      var day = date.getDate();
-      var hours = [];
-      var hour, pushedDate;
-      for (hour = 0 ; hour < 24 ; hour++) {
-        pushedDate = createNewDate(year, month, day, hour);
-        hours.push(pushedDate);
-      }
-      return hours;
-    },
-    isAfter : function(model, date) {
+
+    isAfter: function (model, date) {
       model = (model !== undefined) ? new Date(model) : model;
       date = new Date(date);
       return model && model.getTime() >= date.getTime();
     },
-    isBefore : function(model, date) {
+    isBefore: function (model, date) {
       model = (model !== undefined) ? new Date(model) : model;
       date = new Date(date);
       return model.getTime() <= date.getTime();
     },
-    isSameYear :   function(model, date) {
+    isSameYear: function (model, date) {
       model = (model !== undefined) ? new Date(model) : model;
       date = new Date(date);
       return model && model.getFullYear() === date.getFullYear();
     },
-    isSameMonth : function(model, date) {
+    isSameMonth: function (model, date) {
       model = (model !== undefined) ? new Date(model) : model;
       date = new Date(date);
       return this.isSameYear(model, date) && model.getMonth() === date.getMonth();
     },
-    isSameDay : function(model, date) {
+    isSameDay: function (model, date) {
       model = (model !== undefined) ? new Date(model) : model;
       date = new Date(date);
       return this.isSameMonth(model, date) && model.getDate() === date.getDate();
     },
-    isSameHour : function(model, date) {
+    isSameHour: function (model, date) {
       model = (model !== undefined) ? new Date(model) : model;
       date = new Date(date);
       return this.isSameDay(model, date) && model.getHours() === date.getHours();
     },
-    isSameMinutes : function(model, date) {
+    isSameMinutes: function (model, date) {
       model = (model !== undefined) ? new Date(model) : model;
       date = new Date(date);
       return this.isSameHour(model, date) && model.getMinutes() === date.getMinutes();
     },
-    isValidDate : function(value) {
+    isValidDate: function (value) {
       // Invalid Date: getTime() returns NaN
       return value && !(value.getTime && value.getTime() !== value.getTime());
     }
