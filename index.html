@@ -202,6 +202,8 @@
   <div class="span6">
     <pre>{{vm.now}}</pre>
     <pre>{{vm.endTime}}</pre>
+    <pre>{{vm.endTimeUTC}}</pre>
+    <pre>{{vm.endTimeUTC|date:'dd/MM/yy':'UTC'  }}</pre>
   </div>
 </div>
 
@@ -215,9 +217,15 @@
 
 <script>
   angular.module('sample', ['datePicker', 'ui.bootstrap'])
-          .controller('TestCtrl', ['$scope', function($scope){
+          .controller('TestCtrl', ['$scope', 'datePickerUtils', function($scope, datePickerUtils){
             var vm = this;
             vm.now = new Date();
+            vm.endTimeUTC = new Date();
+            $scope.$watch(function(){
+              return vm.endTime;
+            }, function(){
+              vm.endTimeUTC = datePickerUtils.createDateAsUTC(vm.endTime);
+            })
           }]);
 </script>
 </body>

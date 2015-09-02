@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="app/styles/bootstrap.css">
+    <link rel="stylesheet" href="dist/index.css"/>
+</head>
+<body ng-app="sample">
+<div class="row-fluid" ng-controller="TestCtrl as vm">
+    <div class="span6">
+        <div>
+            <form id="inputform" name="vm.form" novalidate>
+                <div class="input-group date" date-time-append>
+                    <input name="endTime" id="inputEndTime" type="text" class="form-control" min="2020-11-11T11:11:11"
+                           date-time ng-model="vm.endTime" required min-date="{{vm.now|date:'yyyy-MM-ddTHH:mm:ssZ'}}"
+                           max-view="year" view="date" min-view="minutes" auto-close="true"
+                           format="dd/MM/yy 'às' HH'h'mm'min'" date after="vm.now"
+                           before="vm.endTime"
+                           readonly>
+                    <!-- min-date="{{vm.now|date:'yyyy-MM-ddTHH:mm:ssZ'}}" -->
+                    <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                </div>
+
+                <div class="error-message" ng-show="vm.form.endTime.$error.required">
+                    Selecionar a data final para envio de propostas.
+                </div>
+                <div class="error-message" ng-show="vm.form.endTime.$error.min">
+                    Selecionar data futura.
+                </div>
+                <div class="error-message" ng-show="vm.form.endTime.$error.max">
+                    Selecionar menor data maxima.
+                </div>
+
+                <pre>{{vm.form.endTime.$error|json}}</pre>
+                <pre>{{vm.form | json}}</pre>
+                <pre>{{vm.now}}</pre>
+                <pre>{{vm.endTime}}</pre>
+            </form>
+        </div>
+    </div>
+    <div class="span6">
+        <pre>{{vm.now}}</pre>
+        <pre>{{vm.endTime}}</pre>
+        <pre>{{vm.endTimeUTC}}</pre>
+        <pre>{{vm.endTimeUTC|date:'dd/MM/yy':'UTC'  }}</pre>
+    </div>
+</div>
+
+<script src="app/components/moment/moment.js"></script>
+<script src="app/components/angular/angular.js"></script>
+<script src="app/components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+<script src="app/scripts/momentPicker.js"></script>
+<script src="app/scripts/momentUtils.js"></script>
+<script src="app/scripts/momentInput.js"></script>
+
+<script>
+    angular.module('sample', ['datePicker', 'ui.bootstrap'])
+            .controller('TestCtrl', ['$scope', 'momentUtils', function ($scope, momentUtils) {
+                var vm = this;
+                vm.now = moment();
+                vm.endTimeUTC = moment().utc();
+                $scope.$watch(function () {
+                    return vm.endTime;
+                }, function () {
+                    vm.endTimeUTC = momentUtils.createDateAsUTC(vm.endTime);
+                })
+            }]);
+</script>
+</body>
+</html>
