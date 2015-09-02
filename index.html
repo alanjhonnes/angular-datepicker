@@ -163,7 +163,7 @@
         <div class="input-group date" date-time-append>
           <input name="endTime" id="inputEndTime" type="text" class="form-control" min="2020-11-11T11:11:11"
                  date-time ng-model="vm.endTime" required min-date="{{vm.now|date:'yyyy-MM-ddTHH:mm:ssZ'}}"
-                 view="date" min-view="minutes" auto-close="true" format="dd/MM/yy 'às' HH'h'mm'min'" date after="vm.now"
+                 max-view="year" view="date" min-view="minutes" auto-close="true" format="dd/MM/yy 'às' HH'h'mm'min'" date after="vm.now"
                  before="vm.endTime"
                  readonly>
           <!-- min-date="{{vm.now|date:'yyyy-MM-ddTHH:mm:ssZ'}}" -->
