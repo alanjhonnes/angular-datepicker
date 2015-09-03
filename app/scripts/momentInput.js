@@ -3,13 +3,13 @@
 var PRISTINE_CLASS = 'ng-pristine',
   DIRTY_CLASS = 'ng-dirty';
 
-var Module = angular.module('datePicker');
+var Module = angular.module('momentPicker');
 
-Module.constant('dateTimeConfig', {
+Module.constant('momentTimeConfig', {
   template: function (attrs) {
     return '' +
       '<div ' +
-      'date-picker="' + attrs.ngModel + '" ' +
+      'moment-picker="' + attrs.ngModel + '" ' +
       (attrs.view ? 'view="' + attrs.view + '" ' : '') +
       (attrs.maxView ? 'max-view="' + attrs.maxView + '" ' : '') +
       (attrs.autoClose ? 'auto-close="' + attrs.autoClose + '" ' : '') +
@@ -25,7 +25,7 @@ Module.constant('dateTimeConfig', {
   position: 'relative'
 });
 
-Module.directive('dateTimeAppend', function () {
+Module.directive('momentTimeAppend', function () {
   return {
     link: function (scope, element) {
       element.bind('click', function () {
@@ -35,22 +35,22 @@ Module.directive('dateTimeAppend', function () {
   };
 });
 
-Module.directive('dateTime', ['$compile', '$document', '$filter', 'dateTimeConfig', '$parse', 'datePickerUtils',
-  function ($compile, $document, $filter, dateTimeConfig, $parse, datePickerUtils) {
+Module.directive('momentTime', ['$compile', '$document', '$filter', 'momentTimeConfig', '$parse', 'momentUtils',
+  function ($compile, $document, $filter, momentTimeConfig, $parse, momentUtils) {
     var body = $document.find('body');
-    var dateFilter = $filter('date');
+    var dateFilter = $filter('moment');
 
     return {
       require: 'ngModel',
       link: function (scope, element, attrs, ngModel) {
-        var format = attrs.format || dateTimeConfig.format;
+        var format = attrs.format || momentTimeConfig.format;
         var parentForm = element.inheritedData('$formController');
-        var views = $parse(attrs.views)(scope) || dateTimeConfig.views.concat();
+        var views = $parse(attrs.views)(scope) || momentTimeConfig.views.concat();
         var view = attrs.view || views[0];
         var index = views.indexOf(view);
-        var dismiss = attrs.autoClose ? $parse(attrs.autoClose)(scope) : dateTimeConfig.autoClose;
+        var dismiss = attrs.autoClose ? $parse(attrs.autoClose)(scope) : momentTimeConfig.autoClose;
         var picker = null;
-        var position = attrs.position || dateTimeConfig.position;
+        var position = attrs.position || momentTimeConfig.position;
         var container = null;
 
         if (index === -1) {
@@ -75,7 +75,7 @@ Module.directive('dateTime', ['$compile', '$document', '$filter', 'dateTimeConfi
           var minVal = new Date(attrs.minDate);
 
           ngModel.$validators.min = function (value) {
-            return !datePickerUtils.isValidDate(value) || angular.isUndefined(minVal) || value >= minVal;
+            return !momentUtils.isValidDate(value) || angular.isUndefined(minVal) || value >= minVal;
           };
           attrs.$observe('minDate', function (val) {
             minVal = new Date(val);
@@ -86,7 +86,7 @@ Module.directive('dateTime', ['$compile', '$document', '$filter', 'dateTimeConfi
         if (angular.isDefined(attrs.maxDate)) {
           var maxVal = new Date(attrs.maxDate);
           ngModel.$validators.max = function (value) {
-            return !datePickerUtils.isValidDate(value) || angular.isUndefined(maxVal) || value <= maxVal;
+            return !momentUtils.isValidDate(value) || angular.isUndefined(maxVal) || value <= maxVal;
           };
           attrs.$observe('maxDate', function (val) {
             maxVal = new Date(val);
@@ -95,7 +95,7 @@ Module.directive('dateTime', ['$compile', '$document', '$filter', 'dateTimeConfi
         }
         //end min, max date validator
 
-        var template = dateTimeConfig.template(attrs);
+        var template = momentTimeConfig.template(attrs);
 
         function updateInput(event) {
           event.stopPropagation();
@@ -164,7 +164,7 @@ Module.directive('dateTime', ['$compile', '$document', '$filter', 'dateTimeConfi
         }
 
         element.bind('focus', showPicker);
-        element.bind('blur', clear);
+        //element.bind('blur', clear);
       }
     };
   }]);

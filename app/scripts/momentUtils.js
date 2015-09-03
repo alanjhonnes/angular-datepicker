@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('datePicker').constant('moment', moment);
+angular.module('momentPicker').constant('moment', moment);
 
-angular.module('datePicker').factory('momentUtils', ['moment', function (moment) {
+angular.module('momentPicker').factory('momentUtils', ['moment', function (moment) {
 
   return {
     getVisibleMinutes: function (date, step) {
@@ -27,41 +27,77 @@ angular.module('datePicker').factory('momentUtils', ['moment', function (moment)
       var hours = [];
       var hour, pushedMoment;
       for (hour = 0; hour < 24; hour ++) {
-        pushedMoment = moment.utc({year: year, month: month, day: day, hour: hour});
+        pushedMoment = moment.utc({year: year, month: month, date: day, hour: hour});
         hours.push(pushedMoment);
       }
       return hours;
     },
     getVisibleWeeks: function (date) {
-      date = moment.utc(date || null);
+      if(date){
+        date = moment.utc(date);
+      }
+      else {
+        date = moment.utc();
+      }
       var startMonth = date.month();
       var startYear = date.year();
       // set date to start of the week
-      date.day(1);
+      date.date(1);
 
-      if (date.day() === 0) {
+      if (date.day() === 1) {
         // day is sunday, let's get back to the previous week
-        date.subtract(5, 'days');
+        date.day(-5);
       } else {
         // day is not sunday, let's get back to the start of the week
         date.day(date.day() - (date.day() - 1));
       }
-      if (date.day() === 1) {
+      if (date.day() === 2) {
         // day is monday, let's get back to the previous week
-        date.subtract(6, 'days');
+        date.day(-6);
       }
 
       var weeks = [];
       var week;
-      while (weeks.length < 6) {
-        if (date.year() === startYear && date.month() > startMonth) {
+      while (weeks.length < 5) {
+        if (date.isSame(startYear, 'year') && date.isAfter(startMonth, 'month')) {
           break;
         }
         week = this.getDaysOfWeek(date);
         weeks.push(week);
-        date.setDate(date.getDate() + 7);
+        date.add(7, 'days');
       }
       return weeks;
+    },
+    getDaysOfWeek: function (date) {
+      if(date){
+        date = moment.utc(date);
+      }
+      else {
+        date = moment.utc();
+      }
+      var year = date.year();
+      var month = date.month();
+      var day = date.date();
+      var days = [];
+      var pushedDate;
+      for (var i = 0; i < 7; i++) {
+        pushedDate = moment.utc({year:year, month:month, date:day});
+        pushedDate.weekday(i);
+        days.push(pushedDate);
+        date.day(1);
+      }
+      return days;
+    },
+    getVisibleMonths: function (date) {
+      date = moment.utc(date || null);
+      var year = date.year();
+      var months = [];
+      var pushedDate;
+      for (var month = 0; month <= 11; month++) {
+        pushedDate = moment.utc({year:year, month:month, day:1});
+        months.push(pushedDate);
+      }
+      return months;
     },
     getVisibleYears: function (date) {
       date = moment.utc(date || null);
@@ -74,32 +110,6 @@ angular.module('datePicker').factory('momentUtils', ['moment', function (moment)
         year++;
       }
       return years;
-    },
-    getDaysOfWeek: function (date) {
-      date = moment.utc(date || null);
-      date.day(date.day() - (date.day() - 1));
-      var year = date.year();
-      var month = date.month();
-      var day = date.day();
-      var days = [];
-      var pushedDate;
-      for (var i = 0; i < 7; i++) {
-        pushedDate = moment.utc({year:year, month:month, day:day});
-        days.push(pushedDate);
-        day++;
-      }
-      return days;
-    },
-    getVisibleMonths: function (date) {
-      date = moment.utc(date || null);
-      var year = date.year();
-      var months = [];
-      var pushedDate;
-      for (var month = 1; month <= 12; month++) {
-        pushedDate = moment.utc({year:year, month:month, day:1});
-        months.push(pushedDate);
-      }
-      return months;
     },
 
     isAfter: function (model, date) {

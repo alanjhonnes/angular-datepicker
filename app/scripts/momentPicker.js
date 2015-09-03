@@ -1,6 +1,6 @@
 'use strict';
 
-var Module = angular.module('datePicker', []);
+var Module = angular.module('momentPicker', []);
 
 Module.constant('momentPickerConfig', {
   template: 'app/templates/momentpicker.html',
@@ -9,6 +9,29 @@ Module.constant('momentPickerConfig', {
   step: 5
 });
 //
+
+Module.filter('moment', ['moment', function(moment){
+  return function(input, format){
+    if(moment.isMoment(input)){
+      return input.format(format);
+    }
+    else {
+      return 'Invalid moment';
+    }
+  }
+}]);
+
+Module.filter('momentUTC', ['moment', function(moment){
+  return function(input, format){
+    if(moment.isMoment(input)){
+      var m = moment(input).utc();
+      return m.format(format);
+    }
+    else {
+      return 'Invalid moment';
+    }
+  }
+}]);
 
 Module.directive('momentPicker', ['momentPickerConfig', 'momentUtils',
   function momentPickerDirective(momentPickerConfig, momentUtils) {
@@ -32,13 +55,17 @@ Module.directive('momentPicker', ['momentPickerConfig', 'momentUtils',
       link: function (scope, element, attrs, ngModel) {
 
         var arrowClick = false;
-
-        scope.date = new Date(scope.model || new Date());
+        if(scope.model){
+          scope.moment = moment.utc(scope.model);
+        }
+        else {
+          scope.moment = moment.utc();
+        }
         scope.minView = scope.minView || 'year';
         scope.maxView = scope.maxView || 'date';
         scope.views = momentPickerConfig.views.concat();
         scope.view = attrs.view || momentPickerConfig.view;
-        scope.now = new Date();
+        scope.now = moment.utc();
         scope.template = attrs.template || momentPickerConfig.template;
 
         var step = parseInt(attrs.step || momentPickerConfig.step, 10);
@@ -89,36 +116,35 @@ Module.directive('momentPicker', ['momentPickerConfig', 'momentUtils',
           if (attrs.disabled) {
             return;
           }
-          //scope.date = datePickerUtils.convertDateToUTC(date);
-          scope.date = date;
+          scope.moment = date;
           // change next view
           var nextView = scope.views[scope.views.indexOf(scope.view) + 1];
           if ((!nextView || partial) || scope.model) {
 
-            scope.model = scope.date;
+            scope.model = scope.moment;
             //scope.model = new Date(scope.model || date);
             //if ngModel , setViewValue and trigger ng-change, etc...
             if (ngModel) {
-              ngModel.$setViewValue(scope.date);
+              ngModel.$setViewValue(scope.moment);
             }
 
             var view = partial ? 'minutes' : scope.view;
             //noinspection FallThroughInSwitchStatementJS
             switch (view) {
               case 'minutes':
-                scope.model.setMinutes(scope.date.getMinutes());
+                scope.model.minute(scope.moment.minute());
               /*falls through*/
               case 'hours':
-                scope.model.setHours(scope.date.getHours());
+                scope.model.hour(scope.moment.hour());
               /*falls through*/
               case 'date':
-                scope.model.setDate(scope.date.getDate());
+                scope.model.day(scope.moment.day());
               /*falls through*/
               case 'month':
-                scope.model.setMonth(scope.date.getMonth());
+                scope.model.month(scope.moment.month());
               /*falls through*/
               case 'year':
-                scope.model.setFullYear(scope.date.getFullYear());
+                scope.model.year(scope.moment.year());
             }
             scope.$emit('setDate', scope.model, scope.view);
           }
@@ -137,10 +163,10 @@ Module.directive('momentPicker', ['momentPickerConfig', 'momentUtils',
           var view = scope.view;
 
           if (scope.model && !arrowClick) {
-            scope.date = new Date(scope.model);
+            scope.moment = moment.utc(scope.model);
             arrowClick = false;
           }
-          var date = scope.date;
+          var date = scope.moment;
 
           switch (view) {
             case 'year':
@@ -166,34 +192,29 @@ Module.directive('momentPicker', ['momentPickerConfig', 'momentUtils',
           if (scope.view !== 'date') {
             return scope.view;
           }
-          return scope.date ? scope.date.getMonth() : null;
+          return scope.moment ? scope.moment.month() : null;
         }
 
         scope.$watch(watch, update);
 
         scope.next = function (delta) {
-          var date = scope.date;
+          var date = scope.moment;
           delta = delta || 1;
           switch (scope.view) {
             case 'year':
-            /*falls through*/
+              date.add(delta, 'years');
+              break;
             case 'month':
-              date.setFullYear(date.getFullYear() + delta);
+              date.add(delta, 'months');
               break;
             case 'date':
-              /* Reverting from ISSUE #113
-               var dt = new Date(date);
-               date.setMonth(date.getMonth() + delta);
-               if (date.getDate() < dt.getDate()) {
-               date.setDate(0);
-               }
-               */
-              date.setMonth(date.getMonth() + delta);
+              date.add(delta, 'months');
               break;
             case 'hours':
-            /*falls through*/
+              date.add(delta, 'days');
+              break;
             case 'minutes':
-              date.setHours(date.getHours() + delta);
+              date.add(delta, 'hours');
               break;
           }
           arrowClick = true;
@@ -238,19 +259,19 @@ Module.directive('momentPicker', ['momentPickerConfig', 'momentUtils',
           //noinspection FallThroughInSwitchStatementJS
           switch (scope.view) {
             case 'minutes':
-              is &= ~~(date.getMinutes() / step) === ~~(now.getMinutes() / step);
+              is &= ~~(date.minutes() / step) === ~~(now.minutes() / step);
             /*falls through*/
             case 'hours':
-              is &= date.getHours() === now.getHours();
+              is &= date.hours() === now.hours();
             /*falls through*/
             case 'date':
-              is &= date.getDate() === now.getDate();
+              is &= date.date() === now.date();
             /*falls through*/
             case 'month':
-              is &= date.getMonth() === now.getMonth();
+              is &= date.month() === now.month();
             /*falls through*/
             case 'year':
-              is &= date.getFullYear() === now.getFullYear();
+              is &= date.year() === now.year();
           }
           return is;
         };

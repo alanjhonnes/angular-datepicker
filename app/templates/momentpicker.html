@@ -1,34 +1,13 @@
-<div ng-switch="view">
-  <div ng-switch-when="date">
-    <table>
-      <thead>
-      <tr>
-        <th ng-click="prev()">&lsaquo;</th>
-        <th colspan="5" class="switch" ng-click="setView('month')" ng-bind="date|date:'yyyy MMMM'"></th>
-        <th ng-click="next()">&rsaquo;</i></th>
-      </tr>
-      <tr>
-        <th ng-repeat="day in weekdays" style="overflow: hidden" ng-bind="day|date:'EEE'"></th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr ng-repeat="week in weeks">
-        <td ng-repeat="day in week">
-          <span
-            ng-class="{'now':isNow(day),'active':isSameDay(day),'disabled':(day.getMonth()!=date.getMonth()),'after':isAfter(day),'before':isBefore(day)}"
-            ng-click="setDate(day)" ng-bind="day.getDate()"></span>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
+<div ng-switch="view" class="moment-picker">
   <div ng-switch-when="year">
     <table>
       <thead>
       <tr>
         <th ng-click="prev(10)">&lsaquo;</th>
-        <th colspan="5" class="switch" ng-bind="years[0].getFullYear()+' - '+years[years.length-1].getFullYear()"></th>
-        <th ng-click="next(10)">&rsaquo;</i></th>
+        <th colspan="5" class="switch">
+          {{years[0]|moment:'YYYY'}} - {{years[years.length-1]|moment:'YYYY'}}
+        </th>
+        <th ng-click="next(10)">&rsaquo;</th>
       </tr>
       </thead>
       <tbody>
@@ -36,7 +15,7 @@
         <td colspan="7">
           <span ng-class="{'active':isSameYear(year),'now':isNow(year), 'after':isAfter(year),'before':isBefore(year)}"
                 ng-repeat="year in years"
-                ng-click="setDate(year)" ng-bind="year.getFullYear()"></span>
+                ng-click="setDate(year)">{{year|moment:'YYYY'}}</span>
         </td>
       </tr>
       </tbody>
@@ -47,8 +26,8 @@
       <thead>
       <tr>
         <th ng-click="prev()">&lsaquo;</th>
-        <th colspan="5" class="switch" ng-click="setView('year')" ng-bind="date|date:'yyyy'"></th>
-        <th ng-click="next()">&rsaquo;</i></th>
+        <th colspan="5" class="switch" ng-click="setView('year')">{{moment|moment:'MMMM YYYY'}}</th>
+        <th ng-click="next()">&rsaquo;</th>
       </tr>
       </thead>
       <tbody>
@@ -57,8 +36,31 @@
           <span ng-repeat="month in months"
                 ng-class="{'active':isSameMonth(month),'after':isAfter(month),'before':isBefore(month),'now':isNow(month)}"
                 ng-click="setDate(month)"
-                ng-bind="month|date:'MMM'">
+                >{{month|moment:'MMM'}}
           </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div ng-switch-when="date">
+    <table>
+      <thead>
+      <tr>
+        <th ng-click="prev()">&lsaquo;</th>
+        <th colspan="5" class="switch" ng-click="setView('month')">{{moment|moment:'MMMM YYYY'}}</th>
+        <th ng-click="next()">&rsaquo;</th>
+      </tr>
+      <tr>
+        <th ng-repeat="day in weekdays" style="overflow: hidden">{{day|moment:'ddd'}}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="week in weeks">
+        <td ng-repeat="day in week">
+          <span
+            ng-class="{'now':isNow(day),'active':isSameDay(day),'disabled':(day.month()!=moment.month()),'after':isAfter(day),'before':isBefore(day)}"
+            ng-click="setDate(day)">{{day|moment:'DD'}}</span>
         </td>
       </tr>
       </tbody>
@@ -68,9 +70,9 @@
     <table>
       <thead>
       <tr>
-        <th ng-click="prev(24)">&lsaquo;</th>
-        <th colspan="5" class="switch" ng-click="setView('date')" ng-bind="date|date:'dd MMMM yyyy'"></th>
-        <th ng-click="next(24)">&rsaquo;</i></th>
+        <th ng-click="prev()">&lsaquo;</th>
+        <th colspan="5" class="switch" ng-click="setView('date')" ng-bind="moment|moment:'DD MMMM YYYY'"></th>
+        <th ng-click="next()">&rsaquo;</th>
       </tr>
       </thead>
       <tbody>
@@ -78,7 +80,9 @@
         <td colspan="7">
           <span ng-repeat="hour in hours"
                 ng-class="{'now':isNow(hour),'active':isSameHour(hour), 'after':isAfter(hour),'before':isBefore(hour)}"
-                ng-click="setDate(hour)" ng-bind="hour|time"></span>
+                ng-click="setDate(hour)">
+            {{hour|moment:'HH:mm'}}
+          </span>
         </td>
       </tr>
       </tbody>
@@ -89,8 +93,8 @@
       <thead>
       <tr>
         <th ng-click="prev()">&lsaquo;</th>
-        <th colspan="5" class="switch" ng-click="setView('hours')" ng-bind="date|date:'dd MMMM yyyy'"></th>
-        <th ng-click="next()">&rsaquo;</i></th>
+        <th colspan="5" class="switch" ng-click="setView('hours')" ng-bind="moment|moment:'HH:mm - DD MMM YYYY'"></th>
+        <th ng-click="next()">&rsaquo;</th>
       </tr>
       </thead>
       <tbody>
@@ -99,7 +103,7 @@
           <span ng-repeat="minute in minutes"
                 ng-class="{active:isSameMinutes(minute),'now':isNow(minute), 'after':isAfter(minute),'before':isBefore(minute)}"
                 ng-click="setDate(minute)"
-                ng-bind="minute|time"></span>
+                ng-bind="minute|moment:'HH:mm'"></span>
         </td>
       </tr>
       </tbody>
