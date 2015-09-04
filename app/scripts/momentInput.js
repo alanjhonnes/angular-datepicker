@@ -17,6 +17,7 @@ Module.constant('momentTimeConfig', {
       (attrs.minView ? 'min-view="' + attrs.minView + '" ' : '') +
       (attrs.partial ? 'partial="' + attrs.partial + '" ' : '') +
       (attrs.step ? 'step="' + attrs.step + '" ' : '') +
+      (attrs.local ? 'local="' + attrs.local + '" ' : '') +
       'class="date-picker-date-time"></div>';
   },
   format: 'yyyy-MM-dd HH:mm',
@@ -49,6 +50,7 @@ Module.directive('momentTime', ['$compile', '$document', '$filter', 'momentTimeC
         var view = attrs.view || views[0];
         var index = views.indexOf(view);
         var dismiss = attrs.autoClose ? $parse(attrs.autoClose)(scope) : momentTimeConfig.autoClose;
+        var local = attrs.local ? $parse(attrs.local)(scope) : momentTimeConfig.local;
         var picker = null;
         var position = attrs.position || momentTimeConfig.position;
         var container = null;

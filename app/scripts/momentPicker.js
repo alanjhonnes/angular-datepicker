@@ -6,7 +6,8 @@ Module.constant('momentPickerConfig', {
   template: 'app/templates/momentpicker.html',
   view: 'month',
   views: ['year', 'month', 'date', 'hours', 'minutes'],
-  step: 5
+  step: 5,
+  local: false
 });
 //
 
@@ -33,6 +34,18 @@ Module.filter('momentUTC', ['moment', function(moment){
   }
 }]);
 
+Module.filter('momentLocal', ['moment', function(moment){
+  return function(input, format){
+    if(moment.isMoment(input)){
+      var m = moment(input).local();
+      return m.format(format);
+    }
+    else {
+      return 'Invalid moment';
+    }
+  }
+}]);
+
 Module.directive('momentPicker', ['momentPickerConfig', 'momentUtils',
   function momentPickerDirective(momentPickerConfig, momentUtils) {
 
@@ -50,22 +63,18 @@ Module.directive('momentPicker', ['momentPickerConfig', 'momentUtils',
         maxView: '@?',
         minDate: '=?',
         maxDate: '=?',
-        utc: '=?'
+        local: '=?'
       },
       link: function (scope, element, attrs, ngModel) {
-
+        scope.local = scope.local || momentPickerConfig.local;
         var arrowClick = false;
-        if(scope.model){
-          scope.moment = moment.utc(scope.model);
-        }
-        else {
-          scope.moment = moment.utc();
-        }
+        scope.moment = newMoment(scope.model);
         scope.minView = scope.minView || 'year';
         scope.maxView = scope.maxView || 'date';
         scope.views = momentPickerConfig.views.concat();
+
         scope.view = attrs.view || momentPickerConfig.view;
-        scope.now = moment.utc();
+        scope.now = newMoment();
         scope.template = attrs.template || momentPickerConfig.template;
 
         var step = parseInt(attrs.step || momentPickerConfig.step, 10);
@@ -163,27 +172,27 @@ Module.directive('momentPicker', ['momentPickerConfig', 'momentUtils',
           var view = scope.view;
 
           if (scope.model && !arrowClick) {
-            scope.moment = moment.utc(scope.model);
+            scope.moment = newMoment(scope.model);
             arrowClick = false;
           }
           var date = scope.moment;
 
           switch (view) {
             case 'year':
-              scope.years = momentUtils.getVisibleYears(date);
+              scope.years = momentUtils.getVisibleYears(date, scope.local);
               break;
             case 'month':
-              scope.months = momentUtils.getVisibleMonths(date);
+              scope.months = momentUtils.getVisibleMonths(date, scope.local);
               break;
             case 'date':
-              scope.weekdays = scope.weekdays || momentUtils.getDaysOfWeek();
-              scope.weeks = momentUtils.getVisibleWeeks(date);
+              scope.weekdays = scope.weekdays || momentUtils.getDaysOfWeek(null, scope.local);
+              scope.weeks = momentUtils.getVisibleWeeks(date, scope.local);
               break;
             case 'hours':
-              scope.hours = momentUtils.getVisibleHours(date);
+              scope.hours = momentUtils.getVisibleHours(date, scope.local);
               break;
             case 'minutes':
-              scope.minutes = momentUtils.getVisibleMinutes(date, step);
+              scope.minutes = momentUtils.getVisibleMinutes(date, step, scope.local);
               break;
           }
         }
@@ -226,31 +235,31 @@ Module.directive('momentPicker', ['momentPickerConfig', 'momentUtils',
         };
 
         scope.isAfter = function (date) {
-          return scope.after && momentUtils.isAfter(date, scope.after);
+          return scope.after && momentUtils.isAfter(date, scope.after, scope.local);
         };
 
         scope.isBefore = function (date) {
-          return scope.before && momentUtils.isBefore(date, scope.before);
+          return scope.before && momentUtils.isBefore(date, scope.before, scope.local);
         };
 
         scope.isSameMonth = function (date) {
-          return momentUtils.isSameMonth(scope.model, date);
+          return momentUtils.isSameMonth(scope.model, date, scope.local);
         };
 
         scope.isSameYear = function (date) {
-          return momentUtils.isSameYear(scope.model, date);
+          return momentUtils.isSameYear(scope.model, date, scope.local);
         };
 
         scope.isSameDay = function (date) {
-          return momentUtils.isSameDay(scope.model, date);
+          return momentUtils.isSameDay(scope.model, date, scope.local);
         };
 
         scope.isSameHour = function (date) {
-          return momentUtils.isSameHour(scope.model, date);
+          return momentUtils.isSameHour(scope.model, date, scope.local);
         };
 
         scope.isSameMinutes = function (date) {
-          return momentUtils.isSameMinutes(scope.model, date);
+          return momentUtils.isSameMinutes(scope.model, date, scope.local);
         };
 
         scope.isNow = function (date) {
@@ -275,6 +284,10 @@ Module.directive('momentPicker', ['momentPickerConfig', 'momentUtils',
           }
           return is;
         };
+
+        function newMoment(options){
+          return momentUtils.createMoment(options, scope.local);
+        }
       }
     };
   }]);

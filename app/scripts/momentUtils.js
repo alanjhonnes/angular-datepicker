@@ -5,8 +5,16 @@ angular.module('momentPicker').constant('moment', moment);
 angular.module('momentPicker').factory('momentUtils', ['moment', function (moment) {
 
   return {
-    getVisibleMinutes: function (date, step) {
-      date = moment.utc(date || null);
+    createMoment: function createMoment(options, local){
+      if(local){
+        return options ? moment(options) : moment();
+      }
+      else {
+        return options ? moment.utc(options) : moment.utc();
+      }
+    },
+    getVisibleMinutes: function (date, step, local) {
+      date = this.createMoment(date, local);
       var year = date.year();
       var month = date.month();
       var day = date.date();
@@ -14,31 +22,26 @@ angular.module('momentPicker').factory('momentUtils', ['moment', function (momen
       var minutes = [];
       var minute, pushedMoment;
       for (minute = 0; minute < 60; minute += step) {
-        pushedMoment = moment.utc({year: year, month: month, day: day, hour: hour, minute: minute});
+        pushedMoment = this.createMoment({year: year, month: month, day: day, hour: hour, minute: minute}, local);
         minutes.push(pushedMoment);
       }
       return minutes;
     },
-    getVisibleHours: function (date) {
-      date = moment.utc(date || null);
+    getVisibleHours: function (date, local) {
+      date = this.createMoment(date, local);
       var year = date.year();
       var month = date.month();
       var day = date.date();
       var hours = [];
       var hour, pushedMoment;
       for (hour = 0; hour < 24; hour ++) {
-        pushedMoment = moment.utc({year: year, month: month, date: day, hour: hour});
+        pushedMoment = this.createMoment({year: year, month: month, date: day, hour: hour}, local);
         hours.push(pushedMoment);
       }
       return hours;
     },
-    getVisibleWeeks: function (date) {
-      if(date){
-        date = moment.utc(date);
-      }
-      else {
-        date = moment.utc();
-      }
+    getVisibleWeeks: function (date, local) {
+      date = this.createMoment(date, local);
       var startMonth = date.month();
       var startYear = date.year();
       // set date to start of the week
@@ -62,76 +65,72 @@ angular.module('momentPicker').factory('momentUtils', ['moment', function (momen
         if (date.isSame(startYear, 'year') && date.isAfter(startMonth, 'month')) {
           break;
         }
-        week = this.getDaysOfWeek(date);
+        week = this.getDaysOfWeek(date, local);
         weeks.push(week);
         date.add(7, 'days');
       }
       return weeks;
     },
-    getDaysOfWeek: function (date) {
-      if(date){
-        date = moment.utc(date);
-      }
-      else {
-        date = moment.utc();
-      }
+    getDaysOfWeek: function (date, local) {
+      date = this.createMoment(date, local);
       var year = date.year();
       var month = date.month();
       var day = date.date();
       var days = [];
       var pushedDate;
       for (var i = 0; i < 7; i++) {
-        pushedDate = moment.utc({year:year, month:month, date:day});
+        pushedDate = this.createMoment({year:year, month:month, date:day, hour:12}, local);
         pushedDate.weekday(i);
+        pushedDate.hour(12);
         days.push(pushedDate);
         date.day(1);
       }
       return days;
     },
-    getVisibleMonths: function (date) {
-      date = moment.utc(date || null);
+    getVisibleMonths: function (date, local) {
+      date = this.createMoment(date, local);
       var year = date.year();
       var months = [];
       var pushedDate;
       for (var month = 0; month <= 11; month++) {
-        pushedDate = moment.utc({year:year, month:month, day:1});
+        pushedDate = this.createMoment({year:year, month:month, day:1, hour:12}, local);
         months.push(pushedDate);
       }
       return months;
     },
-    getVisibleYears: function (date) {
-      date = moment.utc(date || null);
+    getVisibleYears: function (date, local) {
+      date = this.createMoment(date, local);
       var year = date.year();
       var years = [];
       var pushedMoment;
       for (var i = 0; i < 12; i++) {
-        pushedMoment = moment.utc({year: year});
+        pushedMoment = this.createMoment({year: year, hour:12}, local);
         years.push(pushedMoment);
         year++;
       }
       return years;
     },
 
-    isAfter: function (model, date) {
-      return model.isAfter(moment.utc(date));
+    isAfter: function (model, date, local) {
+      return model.isAfter(this.createMoment(date, local));
     },
-    isBefore: function (model, date) {
-      return model.isBefore(moment.utc(date));
+    isBefore: function (model, date, local) {
+      return model.isBefore(this.createMoment(date, local));
     },
-    isSameYear: function (model, date) {
-      return model.isSame(moment.utc(date), 'year');
+    isSameYear: function (model, date, local) {
+      return model.isSame(this.createMoment(date, local), 'year');
     },
-    isSameMonth: function (model, date) {
-      return model.isSame(moment.utc(date), 'year') && model.isSame(moment.utc(date), 'month');
+    isSameMonth: function (model, date, local) {
+      return  model.isSame(this.createMoment(date, local), 'month');
     },
-    isSameDay: function (model, date) {
-      return model.isSame(moment.utc(date), 'month') && model.isSame(moment.utc(date), 'day');
+    isSameDay: function (model, date, local) {
+      return model.isSame(this.createMoment(date, local), 'day');
     },
-    isSameHour: function (model, date) {
-      return model.isSame(moment.utc(date), 'day') && model.isSame(moment.utc(date), 'hour');
+    isSameHour: function (model, date, local) {
+      return  model.isSame(this.createMoment(date, local), 'hour');
     },
-    isSameMinutes: function (model, date) {
-      return model.isSame(moment.utc(date), 'hour') && model.isSame(moment.utc(date), 'minute');
+    isSameMinutes: function (model, date, local) {
+      return model.isSame(this.createMoment(date, local), 'minute');
     },
     isValidDate: function (value) {
       return moment.isMoment(value);

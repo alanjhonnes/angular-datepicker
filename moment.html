@@ -23,7 +23,7 @@
                            <!--before="vm.endTime"-->
                            <!--readonly>-->
                     <input name="endTime" id="inputEndTime" type="text" class="form-control"
-                           moment-time ng-model="vm.endTime" required
+                           moment-time ng-model="vm.endTime" required local="true"
                            max-view="year" view="year" min-view="minutes"
                            format="DD/MM/YYYY [às] HH[h]mm[min]" auto-close="true"
                            readonly>
@@ -48,14 +48,16 @@
                 <pre>{{vm.form | json}}</pre>
                 <pre>{{vm.now}}</pre>
                 <pre>{{vm.endTime}}</pre>
+
             </form>
         </div>
     </div>
     <div class="span6">
-        <pre>{{vm.now}}</pre>
-        <pre>{{vm.endTime}}</pre>
-        <pre>{{vm.endTimeUTC}}</pre>
-        <pre>{{vm.endTimeUTC|date:'dd/MM/yy'  }}</pre>
+        <pre>{{vm.now|moment}} vm.now|moment</pre>
+        <pre>{{vm.endTime|moment}} vm.endTime|moment</pre>
+        <pre>{{vm.endTime|momentUTC}} vm.endTimeUTC|momentUTC </pre>
+        <pre>{{vm.endTime|date:'dd/MM/yy' }}vm.endTimeUTC|date:'dd/MM/yy' </pre>
+        <pre>{{vm.offset}} vm.offset</pre>
     </div>
 </div>
 
@@ -72,12 +74,7 @@
                 var vm = this;
                 vm.now = moment();
                 vm.endTime = moment();
-                vm.endTimeUTC = moment().utc();
-                $scope.$watch(function () {
-                    return vm.endTime;
-                }, function () {
-                    vm.endTimeUTC = vm.endTime.toDate();
-                })
+                vm.offset = moment(new Date()).format('ZZ');
             }]);
 </script>
 </body>
